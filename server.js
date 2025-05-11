@@ -139,23 +139,38 @@ const server = http.createServer((req, res) => {
         throw err;
       }
       const parsedNewUser = JSON.parse(newUser);
-      db.users.push({
-        name: parsedNewUser?.name || null,
-        userName: parsedNewUser?.userName || null,
-        email: parsedNewUser?.email || null,
-        role: parsedNewUser?.role || null,
-        id: Math.round(Math.random() * 1000),
-        crime: 0,
-      });
+      const { name, userName, email, role } = parsedNewUser;
 
-      fs.writeFile("db.json", JSON.stringify(db), (err) => {
-        if (err) {
-          throw err;
-        }
-        res.writeHead(201, { "content-type": "application/json" });
-        res.write(JSON.stringify({ message: "user added successfully" }));
+      const isExist = db.users.some(
+        (user) => user.name === name || user.email === email
+      );
+      if (isExist) {
+        res.writeHead(409, { "content-type": "application/json" });
+        res.write(JSON.stringify({ message: "user name or email is exist" }));
         res.end();
-      });
+      } else if (![name, userName, email].every(Boolean)) {
+        res.writeHead(422, { "content-type": "application/json" });
+        res.write(JSON.stringify({ message: "user data are not valid" }));
+        res.end();
+      } else {
+        db.users.push({
+          name: name || null,
+          userName: userName || null,
+          email: email || null,
+          role: role || null,
+          id: Math.round(Math.random() * 1000),
+          crime: 0,
+        });
+
+        fs.writeFile("db.json", JSON.stringify(db), (err) => {
+          if (err) {
+            throw err;
+          }
+          res.writeHead(201, { "content-type": "application/json" });
+          res.write(JSON.stringify({ message: "user added successfully" }));
+          res.end();
+        });
+      }
     });
   } else if (req.method === "PUT" && req.url.startsWith("/api/users")) {
     const userId = req.url.split("/").slice(-1)[0];
