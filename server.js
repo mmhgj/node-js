@@ -144,13 +144,13 @@ const server = http.createServer((req, res) => {
       const isExist = db.users.some(
         (user) => user.name === name || user.email === email
       );
-      if (isExist) {
-        res.writeHead(409, { "content-type": "application/json" });
-        res.write(JSON.stringify({ message: "user name or email is exist" }));
-        res.end();
-      } else if (![name, userName, email].every(Boolean)) {
+      if (![name, userName, email].every(Boolean)) {
         res.writeHead(422, { "content-type": "application/json" });
         res.write(JSON.stringify({ message: "user data are not valid" }));
+        res.end();
+      } else if (isExist) {
+        res.writeHead(409, { "content-type": "application/json" });
+        res.write(JSON.stringify({ message: "user name or email is exist" }));
         res.end();
       } else {
         db.users.push({
