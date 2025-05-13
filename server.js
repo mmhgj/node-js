@@ -172,6 +172,51 @@ const server = http.createServer((req, res) => {
         });
       }
     });
+  } else if (req.method === "PUT" && req.url.startsWith("/api/users/upgrade")) {
+    const userId = req.url.split("/").slice(-1)[0];
+
+    let roleId = "";
+
+    req.on("data", (data) => {
+      roleId += data.toString();
+    });
+
+    req.on("close", (error) => {
+      if (error) {
+        throw error;
+      }
+      const parsedRole = JSON.parse(roleId);
+
+      if (Object.hasOwn(parsedRole, "role")) {
+        const role = String(parsedRole?.role) === "0" ? 0 : 1;
+        const userIndex = db.users.findIndex((user) => +user.id === +userId);
+
+        if (userIndex !== -1) {
+          db.users[userIndex] = {
+            ...db.users[userIndex],
+            role: role === 0 ? "USER" : "ADMIN",
+          };
+
+          fs.writeFile("db.json", JSON.stringify(db), (err) => {
+            if (err) {
+              throw err;
+            }
+            res.writeHead(200, { "content-type": "application/json" });
+            res.write(
+              JSON.stringify({
+                message: "user role updated",
+                user: db.users[userIndex],
+              })
+            );
+            res.end();
+          });
+        } else {
+          res.writeHead(200, { "content-type": "application/json" });
+          res.write(JSON.stringify({ message: "user not found" }));
+          res.end();
+        }
+      }
+    });
   } else if (req.method === "PUT" && req.url.startsWith("/api/users")) {
     const userId = req.url.split("/").slice(-1)[0];
 

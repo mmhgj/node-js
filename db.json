@@ -15,7 +15,8 @@
       "name": "Mohammad ",
       "role": "ADMIN",
       "userName": 1245554,
-      "id": 1
+      "id": 1,
+      "isActive": 0
     },
     {
       "id": 2,
@@ -23,7 +24,8 @@
       "userName": 1245654,
       "email": "test@gmail.com",
       "crime": 0,
-      "role": "ADMIN"
+      "role": "ADMIN",
+      "isActive": 0
     },
     {
       "id": 3,
@@ -31,7 +33,8 @@
       "userName": 1245656,
       "email": "test@gmail.com",
       "crime": 0,
-      "role": "USER"
+      "role": "USER",
+      "isActive": 0
     },
     {
       "name": "Mohammad",
@@ -39,7 +42,8 @@
       "email": "test@gmail.com",
       "role": "ADMIN",
       "id": 487,
-      "crime": 0
+      "crime": 0,
+      "isActive": 0
     },
     {
       "name": "ali",
@@ -47,7 +51,8 @@
       "email": "ali@gmail.com",
       "role": "USER",
       "id": 849,
-      "crime": 0
+      "crime": 0,
+      "isActive": 0
     }
   ]
 }
